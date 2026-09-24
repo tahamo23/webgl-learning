@@ -25,15 +25,30 @@ window.onload = async function () {
 
     var positions = [
         -0.5, +0.5, +0.0,
+        0.0, +0.5, 0.0,
         +0.5, +0.5, +0.0,
-        +0.0, -0.5, +0.0,
-        +0.5, +0.5, +0.0,
+        +0.5, 0.0, 0.0,
+        +0.5, -0.5, +0.0,
+        0.0, -0.5, 0.0,
+        -0.5, -0.5, +0.0,
+        -0.5, 0.0, 0.0,
     ]
 
     var colors = [
-        1, 0, 0.5, 1,
-        0, 1, 1, 1,
-        1, 0.5, 0.5, 1,
+        1, 0, 0, 1,
+        1, 0, 0, 1,
+        1, 0, 0, 1,
+        1, 0, 0, 1,
+        1, 0, 0, 1,
+        1, 0, 0, 1,
+        1, 0, 0, 1,
+        1, 0, 0, 1,
+        0, 1, 0, 1,
+        0, 0, 1, 1,
+        0.5, 0.5, 1, 1,
+        0, 0.5, 0.5, 1,
+        0.75, 0.75, 0, 1,
+        0.8, 0.2, 0.4, 1,
         1, 0.5, 0.5, 1,
     ]
 
@@ -48,7 +63,6 @@ window.onload = async function () {
 
     var vs_source = await loadShaderSource("shaders/vertex.glsl");
     var fs_source = await loadShaderSource("shaders/fragment.glsl");
-
 
     const vs = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(vs, vs_source);
@@ -98,9 +112,18 @@ window.onload = async function () {
     gl.enableVertexAttribArray(colorAttribute);
 
 
+    var indexes = [
+        0, 1, 3,
+        4, 5, 7,
+    ]
+    var index_buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indexes), gl.STATIC_DRAW);
 
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.useProgram(prog);
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    // gl.drawArrays(gl.TRIANGLES, 0, 6);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);  
 
 };
