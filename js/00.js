@@ -36,13 +36,6 @@ window.onload = async function () {
 
     var colors = [
         1, 0, 0, 1,
-        1, 0, 0, 1,
-        1, 0, 0, 1,
-        1, 0, 0, 1,
-        1, 0, 0, 1,
-        1, 0, 0, 1,
-        1, 0, 0, 1,
-        1, 0, 0, 1,
         0, 1, 0, 1,
         0, 0, 1, 1,
         0.5, 0.5, 1, 1,
@@ -111,6 +104,11 @@ window.onload = async function () {
     gl.vertexAttribPointer(colorAttribute, 4, gl.FLOAT, false, 0, 0)
     gl.enableVertexAttribArray(colorAttribute);
 
+    var xUniform = gl.getUniformLocation(prog, "x");
+    x = 0.1;
+    gl.useProgram(prog);
+    gl.uniform1f(xUniform, x);
+
 
     var indexes = [
         0, 1, 3,
@@ -124,6 +122,32 @@ window.onload = async function () {
     gl.useProgram(prog);
     // gl.drawArrays(gl.TRIANGLES, 0, 6);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
-    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);  
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+
+    await sleep(5000);
+
+    var u = 0.05;
+    while (true) {
+        if (x > 0.75) {
+            u = -0.05;
+        } else if (x < 0.25) {
+            u = 0.05;
+        }
+        x *= (1 + u);
+
+        gl.uniform1f(xUniform, x);
+        gl.clear(gl.COLOR_BUFFER_BIT)
+        gl.useProgram(prog);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index_buffer);
+        gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+
+
+        await sleep(50);
+    }
 
 };
+
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
